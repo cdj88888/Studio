@@ -40,6 +40,7 @@ namespace AssetStudio
         Zstd = 5,
         Lz4Lit4 = 4,
         Lz4Lit5 = 5,
+        Lz4Naraka = 6,
     }
 
     public class BundleFile
@@ -474,6 +475,7 @@ namespace AssetStudio
                     }
                 case CompressionType.Lz4: //LZ4
                 case CompressionType.Lz4HC: //LZ4HC
+                case CompressionType.Lz4Naraka when Game.Type.IsNaraka():
                     {
                         var uncompressedBytes = ArrayPool<byte>.Shared.Rent((int)uncompressedSize);
                         try
@@ -586,6 +588,7 @@ namespace AssetStudio
                     case CompressionType.Lz4: //LZ4
                     case CompressionType.Lz4HC: //LZ4HC
                     case CompressionType.Lz4Mr0k when Game.Type.IsMhyGroup(): //Lz4Mr0k
+                    case CompressionType.Lz4Naraka when Game.Type.IsNaraka():
                         {
                             var compressedSize = (int)blockInfo.compressedSize;
                             var uncompressedSize = (int)blockInfo.uncompressedSize;
