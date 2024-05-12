@@ -125,16 +125,14 @@ namespace AssetStudio
                 }
             }
 
-            if (reader.Game.Type.IsNaraka())
-            {
-                var value = reader.ReadInt32();
-            }
-
             if (version[0] > 5 || (version[0] == 5 && version[1] >= 6)) //5.6 and up
             {
                 var disabledShaderPasses = reader.ReadStringArray();
             }
-
+            if (reader.Game.Type.IsNaraka())
+            {
+                var disabledShaderPassNames = reader.ReadStringArray();
+            }
             m_SavedProperties = new UnityPropertySheet(reader);
 
             //vector m_BuildTextureStacks 2020 and up
