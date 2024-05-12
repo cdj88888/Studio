@@ -368,8 +368,35 @@ namespace AssetStudio
 
             if (Game.Type.IsNaraka())
             {
-                m_Header.compressedBlocksInfoSize -= 0xCA;
-                m_Header.uncompressedBlocksInfoSize -= 0xCA;
+                long sizeOffset = m_Header.size - reader.BaseStream.Length;
+                if (sizeOffset == 0x16)
+                {
+                    m_Header.compressedBlocksInfoSize -= 0xCA;
+                    m_Header.uncompressedBlocksInfoSize -= 0xCA;
+                }
+                else if (sizeOffset == 0x1A)
+                {
+                    m_Header.compressedBlocksInfoSize -= 0xB4;
+                    m_Header.uncompressedBlocksInfoSize -= 0xAA;
+                }
+                else if (sizeOffset == 0x14)
+                {
+                    var key = reader.ReadUInt16();
+                    if (key == 15)
+                    {
+                        m_Header.compressedBlocksInfoSize -= 0xAA;
+                        m_Header.uncompressedBlocksInfoSize -= 0xBE;
+                    }
+                    else
+                    {
+                        m_Header.compressedBlocksInfoSize -= 0xA4;
+                        m_Header.uncompressedBlocksInfoSize -= 0x9C;
+                    }                 
+                }
+                else
+                {
+                    Logger.Warning($"Unknown size offset: {sizeOffset}");
+                }
             }
 
             Logger.Verbose($"Bundle header Info: {m_Header}");
