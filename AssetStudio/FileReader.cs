@@ -53,9 +53,10 @@ namespace AssetStudio
                     {
                         Logger.Verbose("signature does not match any of the supported string signatures, attempting to check bytes signatures");
                         byte[] magic = ReadBytes(2);
+                        byte cm = ReadByte();
                         Position = 0;
                         Logger.Verbose($"Parsed signature is {Convert.ToHexString(magic)}");
-                        if (gzipMagic.SequenceEqual(magic))
+                        if (gzipMagic.SequenceEqual(magic) && (cm == 0x08 || cm == 0x00)) //添加压缩算法验证，防止误走入此逻辑
                         {
                             return FileType.GZipFile;
                         }
