@@ -78,6 +78,15 @@ namespace AssetStudio
             {
                 var m_MipsStripped = reader.ReadInt32();
             }
+            if (IsTuanJie) { 
+                var m_WebStreaming = reader.ReadBoolean();
+                reader.AlignStream();
+                var m_PriorityLevel = reader.ReadInt32();
+                var m_UploadedMode = reader.ReadInt32();
+                var m_DataStreamDataSize = reader.ReadInt32();
+                var m_DataStreamDataPath = reader.ReadUInt8Array();
+                reader.AlignStream();
+            }
             m_TextureFormat = (TextureFormat)reader.ReadInt32();
             if (version[0] < 5 || (version[0] == 5 && version[1] < 2)) //5.2 down
             {
