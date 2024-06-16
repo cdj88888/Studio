@@ -120,6 +120,10 @@ namespace AssetStudio
                     {
                         var m_MeshShowQuality = reader.ReadByte();
                     }
+                    if (IsTuanJie) {
+                        var m_virtualGeometry = reader.ReadByte();
+                        var m_virtualGeometryShadow = reader.ReadByte();
+                    }
                     reader.AlignStream();
                 }
                 else
