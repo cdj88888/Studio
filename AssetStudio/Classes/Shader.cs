@@ -21,25 +21,27 @@ namespace AssetStudio
         public List<MatrixParameter> m_MatrixParams;
         public List<VectorParameter> m_VectorParams;
 
-        public StructParameter(EndianBinaryReader reader)
+        public StructParameter(EndianBinaryReader reader, bool IsTuanJie)
         {
             var m_NameIndex = reader.ReadInt32();
             var m_Index = reader.ReadInt32();
             var m_ArraySize = reader.ReadInt32();
             var m_StructSize = reader.ReadInt32();
-
+            if (IsTuanJie) {
+                var m_IndexInCB = reader.ReadInt32();
+            }
             int numVectorParams = reader.ReadInt32();
             m_VectorParams = new List<VectorParameter>();
             for (int i = 0; i < numVectorParams; i++)
             {
-                m_VectorParams.Add(new VectorParameter(reader));
+                m_VectorParams.Add(new VectorParameter(reader, IsTuanJie));
             }
 
             int numMatrixParams = reader.ReadInt32();
             m_MatrixParams = new List<MatrixParameter>();
             for (int i = 0; i < numMatrixParams; i++)
             {
-                m_MatrixParams.Add(new MatrixParameter(reader));
+                m_MatrixParams.Add(new MatrixParameter(reader, IsTuanJie));
             }
         }
     }
@@ -339,11 +341,15 @@ namespace AssetStudio
         public sbyte m_Type;
         public sbyte m_Dim;
 
-        public VectorParameter(EndianBinaryReader reader)
+        public VectorParameter(EndianBinaryReader reader, bool IsTuanJie)
         {
             m_NameIndex = reader.ReadInt32();
             m_Index = reader.ReadInt32();
             m_ArraySize = reader.ReadInt32();
+            if (IsTuanJie)
+            {
+                var m_IndexInCB = reader.ReadInt32();
+            }            
             m_Type = reader.ReadSByte();
             m_Dim = reader.ReadSByte();
             reader.AlignStream();
@@ -358,11 +364,15 @@ namespace AssetStudio
         public sbyte m_Type;
         public sbyte m_RowCount;
 
-        public MatrixParameter(EndianBinaryReader reader)
+        public MatrixParameter(EndianBinaryReader reader, bool IsTuanJie)
         {
             m_NameIndex = reader.ReadInt32();
             m_Index = reader.ReadInt32();
             m_ArraySize = reader.ReadInt32();
+            if (IsTuanJie)
+            {
+                var m_IndexInCB = reader.ReadInt32();
+            }            
             m_Type = reader.ReadSByte();
             m_RowCount = reader.ReadSByte();
             reader.AlignStream();
@@ -423,6 +433,7 @@ namespace AssetStudio
         public ConstantBuffer(ObjectReader reader)
         {
             var version = reader.version;
+            bool IsTuanJie = reader.IsTuanJie;
 
             m_NameIndex = reader.ReadInt32();
 
@@ -430,14 +441,14 @@ namespace AssetStudio
             m_MatrixParams = new List<MatrixParameter>();
             for (int i = 0; i < numMatrixParams; i++)
             {
-                m_MatrixParams.Add(new MatrixParameter(reader));
+                m_MatrixParams.Add(new MatrixParameter(reader, IsTuanJie));
             }
 
             int numVectorParams = reader.ReadInt32();
             m_VectorParams = new List<VectorParameter>();
             for (int i = 0; i < numVectorParams; i++)
             {
-                m_VectorParams.Add(new VectorParameter(reader));
+                m_VectorParams.Add(new VectorParameter(reader, IsTuanJie));
             }
             if (version[0] > 2017 || (version[0] == 2017 && version[1] >= 3)) //2017.3 and up
             {
@@ -445,11 +456,13 @@ namespace AssetStudio
                 m_StructParams = new List<StructParameter>();
                 for (int i = 0; i < numStructParams; i++)
                 {
-                    m_StructParams.Add(new StructParameter(reader));
+                    m_StructParams.Add(new StructParameter(reader, IsTuanJie));
                 }
             }
             m_Size = reader.ReadInt32();
-
+            if (IsTuanJie) { 
+                var m_totalParameterCount = reader.ReadInt32();
+            }
             if ((version[0] == 2020 && version[1] > 3) ||
                (version[0] == 2020 && version[1] == 3 && version[2] >= 2) || //2020.3.2f1 and up
                (version[0] > 2021) ||
@@ -527,17 +540,18 @@ namespace AssetStudio
         public SerializedProgramParameters(ObjectReader reader)
         {
             int numVectorParams = reader.ReadInt32();
+            bool IsTuanJie = reader.IsTuanJie;
             m_VectorParams = new List<VectorParameter>();
             for (int i = 0; i < numVectorParams; i++)
             {
-                m_VectorParams.Add(new VectorParameter(reader));
+                m_VectorParams.Add(new VectorParameter(reader, IsTuanJie));
             }
 
             int numMatrixParams = reader.ReadInt32();
             m_MatrixParams = new List<MatrixParameter>();
             for (int i = 0; i < numMatrixParams; i++)
             {
-                m_MatrixParams.Add(new MatrixParameter(reader));
+                m_MatrixParams.Add(new MatrixParameter(reader, IsTuanJie));
             }
 
             int numTextureParams = reader.ReadInt32();
@@ -608,7 +622,7 @@ namespace AssetStudio
         public SerializedSubProgram(ObjectReader reader)
         {
             var version = reader.version;
-            
+            var IsTuanJie = reader.IsTuanJie;
             if (reader.Game.Type.IsLoveAndDeepspace())
             {
                 var m_CodeHash = new Hash128(reader);
@@ -667,14 +681,14 @@ namespace AssetStudio
                 m_VectorParams = new List<VectorParameter>();
                 for (int i = 0; i < numVectorParams; i++)
                 {
-                    m_VectorParams.Add(new VectorParameter(reader));
+                    m_VectorParams.Add(new VectorParameter(reader, IsTuanJie));
                 }
 
                 int numMatrixParams = reader.ReadInt32();
                 m_MatrixParams = new List<MatrixParameter>();
                 for (int i = 0; i < numMatrixParams; i++)
                 {
-                    m_MatrixParams.Add(new MatrixParameter(reader));
+                    m_MatrixParams.Add(new MatrixParameter(reader, IsTuanJie));
                 }
 
                 int numTextureParams = reader.ReadInt32();
