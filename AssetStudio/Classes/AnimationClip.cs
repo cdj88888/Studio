@@ -1888,28 +1888,29 @@ namespace AssetStudio
                 var m_aclType = reader.ReadInt32();
             }
 
-            if (version[0] > 5 || (version[0] == 5 && version[1] >= 3))//5.3 and up
-            {
-                int numEulerCurves = reader.ReadInt32();
-                m_EulerCurves = new List<Vector3Curve>();
-                for (int i = 0; i < numEulerCurves; i++)
+            if (!IsTuanJie ) {
+                if (version[0] > 5 || (version[0] == 5 && version[1] >= 3))//5.3 and up
                 {
-                    m_EulerCurves.Add(new Vector3Curve(reader));
+                    int numEulerCurves = reader.ReadInt32();
+                    m_EulerCurves = new List<Vector3Curve>();
+                    for (int i = 0; i < numEulerCurves; i++)
+                    {
+                        m_EulerCurves.Add(new Vector3Curve(reader));
+                    }
                 }
-            }
+                int numPCurves = reader.ReadInt32();
+                m_PositionCurves = new List<Vector3Curve>();
+                for (int i = 0; i < numPCurves; i++)
+                {
+                    m_PositionCurves.Add(new Vector3Curve(reader));
+                }
 
-            int numPCurves = reader.ReadInt32();
-            m_PositionCurves = new List<Vector3Curve>();
-            for (int i = 0; i < numPCurves; i++)
-            {
-                m_PositionCurves.Add(new Vector3Curve(reader));
-            }
-
-            int numSCurves = reader.ReadInt32();
-            m_ScaleCurves = new List<Vector3Curve>();
-            for (int i = 0; i < numSCurves; i++)
-            {
-                m_ScaleCurves.Add(new Vector3Curve(reader));
+                int numSCurves = reader.ReadInt32();
+                m_ScaleCurves = new List<Vector3Curve>();
+                for (int i = 0; i < numSCurves; i++)
+                {
+                    m_ScaleCurves.Add(new Vector3Curve(reader));
+                }
             }
 
             int numFCurves = reader.ReadInt32();
@@ -1958,6 +1959,10 @@ namespace AssetStudio
                         m_MuscleClip = new ClipMuscleConstant(reader);
                     }
                 }
+                else if (IsTuanJie) { 
+                    var m_AnimData = reader.ReadUInt8Array();
+                    var m_StreamingInfo = new StreamingInfo(reader);
+                }                
                 else
                 {
                     m_MuscleClipSize = reader.ReadUInt32();
