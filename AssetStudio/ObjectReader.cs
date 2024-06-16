@@ -17,7 +17,8 @@ namespace AssetStudio
 
         public int[] version => assetsFile.version;
         public BuildType buildType => assetsFile.buildType;
-
+        public bool IsTuanJie => assetsFile.IsTuanJie;
+        
         public ObjectReader(EndianBinaryReader reader, SerializedFile assetsFile, ObjectInfo objectInfo, Game game) : base(reader.BaseStream, reader.Endian)
         {
             this.assetsFile = assetsFile;
