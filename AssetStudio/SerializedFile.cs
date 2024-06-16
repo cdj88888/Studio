@@ -33,6 +33,7 @@ namespace AssetStudio
         public List<FileIdentifier> m_Externals;
         public List<SerializedType> m_RefTypes;
         public string userInformation;
+        public bool IsTuanJie = false;
 
         public SerializedFile(FileReader reader, AssetsManager assetsManager)
         {
@@ -245,6 +246,8 @@ namespace AssetStudio
         {
             if (stringVersion != strippedVersion)
             {
+                int index = stringVersion.IndexOf("t");
+                IsTuanJie = index >= 0 ? true : false;
                 unityVersion = stringVersion;
                 var buildSplit = Regex.Replace(stringVersion, @"\d", "").Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries);
                 buildType = new BuildType(buildSplit[0]);
