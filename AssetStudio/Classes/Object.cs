@@ -23,7 +23,9 @@ namespace AssetStudio
         public SerializedType serializedType;
         [JsonIgnore]
         public uint byteSize;
-
+        [JsonIgnore]
+        public bool IsTuanJie = false;
+        
         public virtual string Name => string.Empty;
 
         public Object(ObjectReader reader)
@@ -38,6 +40,7 @@ namespace AssetStudio
             platform = reader.platform;
             serializedType = reader.serializedType;
             byteSize = reader.byteSize;
+            IsTuanJie = reader.IsTuanJie;
 
             Logger.Verbose($"Attempting to read object {type} with {m_PathID} in file {assetsFile.fileName}, starting from offset 0x{reader.byteStart:X8} with size of 0x{byteSize:X8} !!");
 
