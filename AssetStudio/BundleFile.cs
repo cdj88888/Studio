@@ -383,7 +383,7 @@ namespace AssetStudio
                 else if (sizeOffset == 0x14)
                 {
                     var key = reader.ReadUInt16();
-                    if (key == 15)
+                    if (key == 15 || key == 32773)
                     {
                         m_Header.compressedBlocksInfoSize -= 0xAA;
                         m_Header.uncompressedBlocksInfoSize -= 0xBE;
