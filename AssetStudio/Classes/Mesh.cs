@@ -598,6 +598,49 @@ namespace AssetStudio
                     var m_PackSkinDataToUV2UV3 = reader.ReadBoolean();
                     reader.AlignStream();
                 }
+                
+                if (IsTuanJie)
+                {
+                    var m_LightmapUseUV1 = reader.ReadInt32();
+                    var m_fileScale = reader.ReadSingle;                                   
+                    var NumInputTriangles = reader.ReadUInt32();
+                    var NumInputVertices = reader.ReadUInt32();
+                    var NumInputMeshes = reader.ReadUInt16();
+                    var NumInputTexCoords = reader.ReadUInt16();
+                    var ResourceFlags = reader.ReadUInt32();
+                    var RootClusterPage = reader.ReadUInt8Array();
+                    reader.AlignStream();
+                    var ImposterAtlas = reader.ReadUInt16Array();
+                    reader.AlignStream();
+                    var HierarchyNodesSize = reader.ReadInt32();
+                    for (int i = 0; i < HierarchyNodesSize; i++)
+                    {
+                        for (int l = 0; l < 8; l++)
+                        {
+                            var LODBounds = reader.ReadVector4();
+                            var BoxBoundsCenter = reader.ReadVector3();
+                            var MinLODError_MaxParentLODError = reader.ReadUInt32();
+                            var BoxBoundsExtent = reader.ReadVector3();
+                            var ChildStartReference = reader.ReadUInt32();
+                            var ResourcePageIndex_NumPages_GroupPartSize = reader.ReadUInt32();
+                        }
+                    }
+                    var HierarchyRootOffsets = reader.ReadUInt32Array();
+                    var PageStreamingStatesSize = reader.ReadInt32();
+                    for (int i = 0; i < PageStreamingStatesSize; i++)
+                    {
+                        var BulkOffset = reader.ReadUInt32();
+                        var BulkSize = reader.ReadUInt32();
+                        var PageSize = reader.ReadUInt32();
+                        var DependenciesStart = reader.ReadUInt32();
+                        var DependenciesNum = reader.ReadUInt32();
+                        var Flags = reader.ReadUInt32();
+                    }
+                    var PageDependencies = reader.ReadUInt32Array();
+                    var streamableClusterPageSize = reader.ReadInt32();
+                    var streamableClusterPageData = reader.ReadByte();
+                    reader.AlignStream();
+                }
 
                 //Unity fixed it in 2017.3.1p1 and later versions
                 if ((version[0] > 2017 || (version[0] == 2017 && version[1] >= 4)) || //2017.4
