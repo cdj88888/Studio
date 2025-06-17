@@ -97,7 +97,10 @@ namespace AssetStudio
             {
                 var m_LightmapFlags = reader.ReadUInt32();
             }
-
+            if (reader.Game.Type.IsEarthRevival())
+            {
+                var m_VertexAttributePackingFlag = reader.ReadUInt32();
+            }
             if (version[0] > 5 || (version[0] == 5 && version[1] >= 6)) //5.6 and up
             {
                 var m_EnableInstancingVariants = reader.ReadBoolean();
@@ -109,7 +112,10 @@ namespace AssetStudio
             {
                 var m_CustomRenderQueue = reader.ReadInt32();
             }
-
+            if (reader.Game.Type.IsEarthRevival())
+            {
+                var m_RenderingUsageMask = reader.ReadUInt32();
+            }
             if (reader.Game.Type.IsLoveAndDeepspace())
             {
                 var m_MaterialType = reader.ReadUInt32();
