@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
  
 //Thank's Ekey   https://github.com/Ekey/ER.DATA.Tool
+//If you want to obtain the attached EarthRevival.dll files in this file, please go to the link above to obtain them     Please UnityPlayer.dll Rename EarthRevival.dll
 
 namespace AssetStudio
 {
