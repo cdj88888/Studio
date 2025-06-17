@@ -103,6 +103,24 @@ namespace AssetStudio
             {
                 m_RotationOrder = reader.ReadInt32();
             }
+            if (reader.Game.Type.IsEarthRevival())
+            {
+                var m_Range = readerFunc();
+                var m_Min = readerFunc();
+                var m_IsBitCompress = reader.ReadBoolean();
+                reader.AlignStream();
+
+                var m_MetaData = reader.ReadInt32();
+                for (int i = 0; i < m_MetaData; i++)
+                {
+                    var m_MetaData_m_Range = readerFunc();
+                    var m_MetaData_m_Min = readerFunc();
+                    var m_BitRate = readerFunc();
+                    var m_BitFixed = readerFunc();
+                    var m_SegmentBegin = reader.ReadInt32();
+                    var m_SegmentEnd = reader.ReadInt32();
+                }
+            }
         }
 
         public YAMLNode ExportYAML(int[] version)
@@ -1302,7 +1320,20 @@ namespace AssetStudio
             }
         }
     }
-
+    public class QuantizedClip
+    {
+        public QuantizedClip(ObjectReader reader)
+        {
+            var m_FrameCount = reader.ReadUInt32();
+            var m_CurveCount = reader.ReadUInt32();
+            var m_SampleRate = reader.ReadSingle();
+            var m_BeginTime = reader.ReadSingle();
+            var m_KeyDataOffset = reader.ReadUInt32();
+            var m_CurveOffsetIndicesSize = reader.ReadUInt32();
+            var m_Data = reader.ReadUInt8Array();
+            reader.AlignStream();
+        }
+    }
     public class Clip
     {
         public ACLClip m_ACLClip = new EmptyACLClip();
@@ -1328,6 +1359,10 @@ namespace AssetStudio
             {
                 m_ACLClip = new MHYACLClip();
                 m_ACLClip.Read(reader);
+            }
+            if (reader.Game.Type.IsEarthRevival())
+            {
+                var m_QuantizedClip = new QuantizedClip(reader);
             }
             if (version[0] > 4 || (version[0] == 4 && version[1] >= 3)) //4.3 and up
             {
@@ -1717,6 +1752,11 @@ namespace AssetStudio
             {
                 pptrCurveMapping.Add(new PPtr<Object>(reader));
             }
+            if (reader.Game.Type.IsEarthRevival())
+            {
+                var bindingToCurveIndices = new bindingToCurveIndices(reader);
+                var bindingsHash = reader.ReadUInt32();
+            }
         }
 
         public YAMLNode ExportYAML(int[] version)
@@ -1787,6 +1827,10 @@ namespace AssetStudio
                 intParameter = reader.ReadInt32();
             }
             messageOptions = reader.ReadInt32();
+            if (reader.Game.Type.IsEarthRevival())
+            {
+                var enableCustomEventExtension = reader.ReadBoolean();
+            }
         }
 
         public YAMLNode ExportYAML(int[] version)
@@ -1989,6 +2033,12 @@ namespace AssetStudio
                 var m_HasGenericRootTransform = reader.ReadBoolean();
                 var m_HasMotionFloatCurves = reader.ReadBoolean();
                 reader.AlignStream();
+            }
+           if (reader.Game.Type.IsEarthRevival())
+            {
+                var PositionValues = reader.ReadVector3Array();
+                var QuaternionValues = reader.ReadVector4Array();
+                var ScaleValues = reader.ReadVector3Array();
             }
             int numEvents = reader.ReadInt32();
             m_Events = new List<AnimationEvent>();
