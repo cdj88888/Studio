@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-
+ 
+//Thank's Ekey   https://github.com/Ekey/ER.DATA.Tool
 
 namespace AssetStudio
 {
