@@ -591,6 +591,11 @@ namespace AssetStudio
                         m_CollisionMeshBaked = reader.ReadBoolean();
                         var m_CollisionMeshConvex = reader.ReadBoolean();
                     }
+                    if (reader.Game.Type.IsEarthRevival())
+                    {
+                        var m_IsDisableAutoUpload = reader.ReadBoolean();
+                        var m_VertexAttributePacking = reader.ReadBoolean();
+                    }
                 }
                 reader.AlignStream();
                 if (reader.Game.Type.IsGISubGroup() || (reader.Game.Type.IsBH3() && HasVertexColorSkinning(reader.serializedType)))
@@ -641,7 +646,10 @@ namespace AssetStudio
                     var streamableClusterPageData = reader.ReadByte();
                     reader.AlignStream();
                 }
-
+                if (reader.Game.Type.IsEarthRevival())
+                {
+                    var m_VertexAttributePackingMask = reader.ReadUInt32();
+                }
                 //Unity fixed it in 2017.3.1p1 and later versions
                 if ((version[0] > 2017 || (version[0] == 2017 && version[1] >= 4)) || //2017.4
                     ((version[0] == 2017 && version[1] == 3 && version[2] == 1) && buildType.IsPatch) || //fixed after 2017.3.1px
