@@ -109,6 +109,12 @@ namespace AssetStudio
         {
             var reader = new FileReader(fullName);
             reader = reader.PreProcessing(Game);
+            if (Game.Type == GameType.EarthRevival && reader.FileType == FileType.ResourceFile)
+            {
+                if (Path.GetExtension(fullName) == ".idx") {
+                    reader.FileType = FileType.idxFile;
+                }
+            }
             LoadFile(reader);
         }
 
@@ -140,12 +146,53 @@ namespace AssetStudio
                 case FileType.BlkFile:
                     LoadBlkFile(reader);
                     break;
+                case FileType.idxFile:
+                    LoadidxFile(reader);
+                    break;
                 case FileType.MhyFile:
                     LoadMhyFile(reader);
                     break;
             }
         }
-
+        
+        private void LoadidxFile(FileReader reader)
+        {
+            Logger.Info("Loading " + reader.FullPath);
+            try
+            {
+                var idxFile = new idxFile(reader);
+                foreach (var file in idxFile.fileList)
+                {
+                    var dummyPath = Path.Combine(Path.GetDirectoryName(reader.FullPath), file.path);
+                    var entryReader = new FileReader(dummyPath, file.stream);
+                    switch (entryReader.FileType)
+                    {
+                        case FileType.AssetsFile:
+                            Logger.Info("Loading " + file.path);
+                            LoadAssetsFromMemory(entryReader, file.fileName);
+                            break;
+                        case FileType.BundleFile:
+                            Logger.Info("Loading " + file.path);
+                            LoadBundleFile(entryReader, file.fileName);
+                            break;
+                        case FileType.ResourceFile:
+                            Logger.Verbose("缓存资源流");
+                            resourceFileReaders.TryAdd(file.fileName, entryReader); //TODO
+                            break;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                var str = $"此文件不是星球重启IDX文件";
+                Logger.Error(str, e);
+            }
+            finally
+            {
+                reader.Dispose();
+            }
+        }
+        
         private void LoadAssetsFile(FileReader reader)
         {
             if (!assetsFileListHash.Contains(reader.FileName))
