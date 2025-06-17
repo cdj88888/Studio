@@ -60,6 +60,14 @@ namespace AssetStudio.CLI
             int extractedCount = 0;
             var reader = new FileReader(fileName);
             reader = reader.PreProcessing(Game);
+            if (Game.Type == GameType.EarthRevival && reader.FileType == FileType.ResourceFile)
+            {
+                if (Path.GetExtension(fileName) == ".idx")
+                {
+                    reader.FileType = FileType.idxFile;
+                }
+            }
+			
             if (reader.FileType == FileType.BundleFile)
                 extractedCount += ExtractBundleFile(reader, savePath);
             else if (reader.FileType == FileType.WebFile)
@@ -68,11 +76,23 @@ namespace AssetStudio.CLI
                 extractedCount += ExtractBlkFile(reader, savePath);
             else if (reader.FileType == FileType.BlockFile)
                 extractedCount += ExtractBlockFile(reader, savePath);
+			else if (reader.FileType == FileType.idxFile)
+                extractedCount += ExtractIdxFile(reader, savePath);            
             else
                 reader.Dispose();
             return extractedCount;
         }
-
+        private static int ExtractIdxFile(FileReader reader, string savePath)
+        {
+            var bundleFile = new idxFile(reader);
+            reader.Dispose();
+            if (bundleFile.fileList.Count > 0)
+            {
+                var extractPath = Path.Combine(savePath, reader.FileName + "_unpacked");
+                return ExtractStreamFile(extractPath, bundleFile.fileList);
+            }
+            return 0;
+        }
         private static int ExtractBundleFile(FileReader reader, string savePath)
         {
             Logger.Info($"Decompressing {reader.FileName} ...");
