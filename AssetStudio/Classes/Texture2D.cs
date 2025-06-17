@@ -1,4 +1,5 @@
-﻿using System;
+
+using System;
 
 namespace AssetStudio
 {
@@ -7,7 +8,12 @@ namespace AssetStudio
         public long offset; //ulong
         public uint size;
         public string path;
-
+        public static UInt64 iGetHash(String m_String)
+        {
+            var TMD5 = MD5.Create();
+            var lpHash = TMD5.ComputeHash(new ASCIIEncoding().GetBytes(m_String));
+            return BitConverter.ToUInt64(lpHash, 0);
+        }
         public StreamingInfo(ObjectReader reader)
         {
             var version = reader.version;
@@ -22,6 +28,11 @@ namespace AssetStudio
             }
             size = reader.ReadUInt32();
             path = reader.ReadAlignedString();
+            if (reader.Game.Type.IsEarthRevival() && path == "")
+            {
+                var dwHash = iGetHash(path.ToLower());
+                path = dwHash.ToString("X8");
+            }
         }
     }
 
@@ -123,6 +134,10 @@ namespace AssetStudio
                 {
                     var m_ReadAllowed = reader.ReadBoolean();
                 }
+            }
+            if (reader.Game.Type.IsEarthRevival())
+            {
+                var m_IsDisableAutoUpload = reader.ReadBoolean();
             }
             if (version[0] > 2018 || (version[0] == 2018 && version[1] >= 2)) //2018.2 and up
             {
