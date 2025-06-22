@@ -29,7 +29,7 @@ namespace AssetStudio
             }
             size = reader.ReadUInt32();
             path = reader.ReadAlignedString();
-            if (reader.Game.Type.IsEarthRevival() && path == "")
+            if (reader.Game.Type.IsEarthRevival() && path != "")
             {
                 var dwHash = iGetHash(path.ToLower());
                 path = dwHash.ToString("X8");
