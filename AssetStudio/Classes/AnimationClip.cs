@@ -1729,7 +1729,15 @@ namespace AssetStudio
             return node;
         }
     }
-
+    public class bindingToCurveIndices
+    {
+        public bindingToCurveIndices(ObjectReader reader)
+        {
+            var positionIndices = reader.ReadUInt32Array();
+            var quaternionIndices = reader.ReadUInt32Array();
+            var scaleIndices = reader.ReadUInt32Array();
+        }
+    }
     public class AnimationClipBindingConstant : IYAMLExportable
     {
         public List<GenericBinding> genericBindings;
